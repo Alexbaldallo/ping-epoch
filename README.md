@@ -1,6 +1,15 @@
-Bot discord para comprobar que server de wow project-epoch esta online
+# Bot Discord para Monitorizar el Servidor WoW Project-Epoch
 
-DISCORD_TOKEN=tu_token_aqui
-WOW_SERVER_IP=ip_del_servidor
+Este bot de Discord se encarga de comprobar periódicamente si el servidor de World of Warcraft **Project-Epoch** está online y notificarlo en un canal específico de Discord.
+
+---
+
+## Variables de Entorno
+
+Para que el bot funcione correctamente, debes configurar las siguientes variables de entorno:
+
+```env
+DISCORD_TOKEN=tu_token_de_discord_aqui
+WOW_SERVER_IP=ip_del_servidor_wow
 WOW_SERVER_PORT=3724
-CHANNEL_ID=123456789012345678
+CHANNEL_ID=id_del_canal_de_discord
