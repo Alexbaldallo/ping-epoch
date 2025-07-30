@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 import socket
 import random
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Lee datos sensibles desde variables de entorno
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -30,7 +30,8 @@ def is_server_online(ip, port):
         s.close()
 
 def now():
-    return datetime.now().strftime('%H:%M')
+    hora_local = datetime.utcnow() + timedelta(hours=2)  # Ajuste manual GMT+2
+    return hora_local.strftime('%H:%M')
 
 @bot.event
 async def on_ready():
