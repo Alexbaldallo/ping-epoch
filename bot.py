@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands, tasks
 import socket
-import asyncio
 import random
 import os
+from datetime import datetime
 
 # Lee datos sensibles desde variables de entorno
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -29,12 +29,15 @@ def is_server_online(ip, port):
     finally:
         s.close()
 
+def now():
+    return datetime.now().strftime('%H:%M')
+
 @bot.event
 async def on_ready():
     print(f'✅ Bot conectado como {bot.user}')
     channel = bot.get_channel(CHANNEL_ID)
     if channel:
-        await channel.send(f"🤖 Bot conectado y monitoreando **{WOW_SERVER_IP}:{WOW_SERVER_PORT}**")
+        await channel.send(f"[{now()}] 🤖 Monitoreando {WOW_SERVER_IP}:{WOW_SERVER_PORT}")
     check_server_loop.start()
 
 @tasks.loop(seconds=10)
@@ -44,10 +47,10 @@ async def check_server_loop():
     try:
         online = is_server_online(WOW_SERVER_IP, WOW_SERVER_PORT)
         if online and not server_was_online:
-            await channel.send(f"🟢 El servidor está **ONLINE** en {WOW_SERVER_IP}:{WOW_SERVER_PORT}")
+            await channel.send(f"[{now()}] 🟢 ONLINE")
             server_was_online = True
         elif not online and server_was_online:
-            await channel.send(f"🔴 El servidor está **OFFLINE** en {WOW_SERVER_IP}:{WOW_SERVER_PORT}")
+            await channel.send(f"[{now()}] 🔴 OFFLINE")
             server_was_online = False
     except Exception as e:
         print(f"Error comprobando el servidor: {e}")
@@ -59,11 +62,9 @@ async def check_server_loop():
 async def check_server_status(ctx):
     try:
         online = is_server_online(WOW_SERVER_IP, WOW_SERVER_PORT)
-        if online:
-            await ctx.send(f"🟢 Servidor ONLINE en {WOW_SERVER_IP}:{WOW_SERVER_PORT}")
-        else:
-            await ctx.send(f"🔴 Servidor OFFLINE en {WOW_SERVER_IP}:{WOW_SERVER_PORT}")
+        status = "🟢 ONLINE" if online else "🔴 OFFLINE"
+        await ctx.send(f"[{now()}] {status}")
     except Exception as e:
-        await ctx.send(f"Error: {e}")
+        await ctx.send(f"[{now()}] ⚠️ Error: {e}")
 
 bot.run(DISCORD_TOKEN)
