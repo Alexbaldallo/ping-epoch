@@ -42,8 +42,10 @@ async def on_ready():
     channel = bot.get_channel(CHANNEL_ID)
     if channel:
         await channel.send(
-            f"[{now()}] 🤖 Monitoreando {WOW_SERVER_IP} en puertos "
-            f"{WOW_LOGIN_PORT} (LoginServer), {WOW_GURUBASHI_PORT} (Gurubashi), {WOW_KEZAN_PORT} (Kezan)"
+            f"```[{now()}] 🤖 Monitoreando {WOW_SERVER_IP}\n"
+            f"  - LoginServer: {WOW_LOGIN_PORT}\n"
+            f"  - Gurubashi:   {WOW_GURUBASHI_PORT}\n"
+            f"  - Kezan:       {WOW_KEZAN_PORT}```"
         )
     check_server_loop.start()
 
@@ -54,20 +56,20 @@ async def check_server_loop():
     try:
         online_login = is_server_online(WOW_SERVER_IP, WOW_LOGIN_PORT)
         if online_login != login_online:
-            status = "🟢 ONLINE" if online_login else "🔴 OFFLINE"
-            await channel.send(f"[{now()}] LoginServer ({WOW_LOGIN_PORT}): {status}")
+            status = "ONLINE ✅" if online_login else "OFFLINE ❌"
+            await channel.send(f"```[{now()}] LoginServer ({WOW_LOGIN_PORT}): {status}```")
             login_online = online_login
-        
+
         online_gurubashi = is_server_online(WOW_SERVER_IP, WOW_GURUBASHI_PORT)
         if online_gurubashi != gurubashi_online:
-            status = "🟢 ONLINE" if online_gurubashi else "🔴 OFFLINE"
-            await channel.send(f"[{now()}] Realm Gurubashi ({WOW_GURUBASHI_PORT}): {status}")
+            status = "ONLINE ✅" if online_gurubashi else "OFFLINE ❌"
+            await channel.send(f"```[{now()}] Realm Gurubashi ({WOW_GURUBASHI_PORT}): {status}```")
             gurubashi_online = online_gurubashi
 
         online_kezan = is_server_online(WOW_SERVER_IP, WOW_KEZAN_PORT)
         if online_kezan != kezan_online:
-            status = "🟢 ONLINE" if online_kezan else "🔴 OFFLINE"
-            await channel.send(f"[{now()}] Realm Kezan ({WOW_KEZAN_PORT}): {status}")
+            status = "ONLINE ✅" if online_kezan else "OFFLINE ❌"
+            await channel.send(f"```[{now()}] Realm Kezan ({WOW_KEZAN_PORT}): {status}```")
             kezan_online = online_kezan
 
     except Exception as e:
@@ -83,12 +85,13 @@ async def check_server_status(ctx):
         online_gurubashi = is_server_online(WOW_SERVER_IP, WOW_GURUBASHI_PORT)
         online_kezan = is_server_online(WOW_SERVER_IP, WOW_KEZAN_PORT)
         msg = (
-            f"[{now()}] LoginServer ({WOW_LOGIN_PORT}): {'🟢 ONLINE' if online_login else '🔴 OFFLINE'}\n"
-            f"[{now()}] Realm Gurubashi ({WOW_GURUBASHI_PORT}): {'🟢 ONLINE' if online_gurubashi else '🔴 OFFLINE'}\n"
-            f"[{now()}] Realm Kezan ({WOW_KEZAN_PORT}): {'🟢 ONLINE' if online_kezan else '🔴 OFFLINE'}"
+            f"```[{now()}] Estado actual:\n"
+            f"LoginServer ({WOW_LOGIN_PORT}): {'ONLINE ✅' if online_login else 'OFFLINE ❌'}\n"
+            f"Gurubashi ({WOW_GURUBASHI_PORT}): {'ONLINE ✅' if online_gurubashi else 'OFFLINE ❌'}\n"
+            f"Kezan     ({WOW_KEZAN_PORT}): {'ONLINE ✅' if online_kezan else 'OFFLINE ❌'}```"
         )
         await ctx.send(msg)
     except Exception as e:
-        await ctx.send(f"[{now()}] ⚠️ Error: {e}")
+        await ctx.send(f"```[{now()}] ⚠️ Error: {e}```")
 
 bot.run(DISCORD_TOKEN)
